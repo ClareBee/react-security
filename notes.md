@@ -59,6 +59,35 @@ const AuthenticatedRoute = ({ children, ...rest }) => {
 
 ### Authenticated HTTP Requests
 
+- add JWT to axios request
+- add HTTP interceptor to axios
+  e.g.
+
+```javascript
+axios.interceptors.request.use(
+  (config) => {
+    config.headers.authorization = `Bearer ${accessToken}`;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+```
+
+- But this sends accessToken to servers we don't know enough about.
+- Best option - set up an instance of axios to keep it specific:
+
+```javascript
+const authAxios = axios.create({
+  baseUrl: apiUrl,
+});
+```
+
+and then add the interceptors onto that
+
+- putting the special version of axios onto context - see `orbit-app/src/context/FetchContext.js`
+
 ### Protecting API Endpoints
 
 ### Hardening the App
