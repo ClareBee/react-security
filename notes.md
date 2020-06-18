@@ -34,6 +34,29 @@
 
 ### Client-side Routing
 
+- protect routes based on auth
+- protect routes based on role
+- react-router-dom's `<Route />` has a render prop where you can check if user is authenticated and redirect if not
+
+```javascript
+const AuthenticatedRoute = ({ children, ...rest }) => {
+  const authContext = useContext(AuthContext);
+
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        authContext.isAuthenticated() ? (
+          <AppShell>{children}</AppShell>
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};
+```
+
 ### Authenticated HTTP Requests
 
 ### Protecting API Endpoints
