@@ -1,9 +1,10 @@
 import React, { useState, createContext } from "react";
-
+import { useHistory } from "react-router-dom";
 const AuthContext = createContext();
 const { Provider } = AuthContext;
 
 const AuthProvider = ({ children }) => {
+  const history = useHistory();
   // best to put this into a useEffect hook
   const token = localStorage.getItem("token");
   const userInfo = localStorage.getItem("userInfo");
@@ -20,11 +21,29 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("expiresAt", expiresAt);
     setAuthState({ token, userInfo, expiresAt });
   };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("expiresAt");
+    setAuthState({ token: null, expiresAt: null, userInfo: {} });
+    history.push("/login");
+  };
+
+  const isAuthenticated = () => {
+    if (!authState.token || !authState.expiresAt) {
+      return false;
+    }
+    // need to divide by 1000 as getTime() returns milliseconds, expiresAt is in seconds
+    return new Date().getTime() / 1000 < authState.expiresAt;
+  };
   return (
     <Provider
       value={{
         authState,
         setAuthState: (authInfo) => setAuthInfo(authInfo),
+        isAuthenticated,
+        logout,
       }}
     >
       {children}
