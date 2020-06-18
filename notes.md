@@ -26,6 +26,9 @@
 ### Auth State
 
 - React Context Vs prop-drilling: https://reactjs.org/docs/context.html
+- persisting auth state on page refresh via browser's localStorage (JSON.stringify for objects)
+- you should NOT store jwt in localStorage due to vulnerability to cross-site scripting attacks (could steal token & use it!) but ok here for experimenting :) (better to use cookies)
+-
 
 ### Client-side Routing
 
