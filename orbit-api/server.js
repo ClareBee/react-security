@@ -141,6 +141,14 @@ const checkJwt = jwt({
   audience: "api.orbit",
 });
 
+const requireAdmin = (req, res, next) => {
+  const { role } = req.user;
+  if (role !== "admmin") {
+    return res.status(401).json({ message: "Insufficient role" });
+  }
+  next();
+};
+
 app.get("/api/dashboard-data", checkJwt, (req, res) => res.json(dashboardData));
 
 app.patch("/api/user-role", async (req, res) => {
@@ -161,7 +169,7 @@ app.patch("/api/user-role", async (req, res) => {
   }
 });
 
-app.get("/api/inventory", async (req, res) => {
+app.get("/api/inventory", checkJwt, requireAdmin, async (req, res) => {
   try {
     const inventoryItems = await InventoryItem.find();
     res.json(inventoryItems);
@@ -170,7 +178,7 @@ app.get("/api/inventory", async (req, res) => {
   }
 });
 
-app.post("/api/inventory", async (req, res) => {
+app.post("/api/inventory", checkJwt, requireAdmin, async (req, res) => {
   try {
     const inventoryItem = new InventoryItem(req.body);
     await inventoryItem.save();
@@ -186,7 +194,7 @@ app.post("/api/inventory", async (req, res) => {
   }
 });
 
-app.delete("/api/inventory/:id", async (req, res) => {
+app.delete("/api/inventory/:id", checkJwt, requireAdmin, async (req, res) => {
   try {
     const deletedItem = await InventoryItem.findOneAndDelete({
       _id: req.params.id,
