@@ -37,6 +37,10 @@ const AuthProvider = ({ children }) => {
     // need to divide by 1000 as getTime() returns milliseconds, expiresAt is in seconds
     return new Date().getTime() / 1000 < authState.expiresAt;
   };
+
+  const isAdmin = () => {
+    return authState.userInfo.role === "admin";
+  };
   return (
     <Provider
       value={{
@@ -44,6 +48,7 @@ const AuthProvider = ({ children }) => {
         setAuthState: (authInfo) => setAuthInfo(authInfo),
         isAuthenticated,
         logout,
+        isAdmin,
       }}
     >
       {children}

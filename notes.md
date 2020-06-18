@@ -30,6 +30,7 @@
 - you should NOT store jwt in localStorage due to vulnerability to cross-site scripting attacks (could steal token & use it!) but ok here for experimenting :) (better to use cookies)
 - check if current user is authenticated. Different in SPA from 'round-trip' applications as decided on the client-side => risky. BUT data is behind protected API endpoints & token has expiresAt to force re-login
 - useHistory hook from react-router: https://reacttraining.com/react-router/web/api/Hooks
+- qq of roles/scopes => keep things fine-grained/extensible (OAuth2: https://oauth.net/2/) => pass through isAuthenticated/isAdmin on the auth context
 
 ### Client-side Routing
 
