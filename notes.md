@@ -138,4 +138,7 @@ app.use(attachUser); // applies to all below here
 
 ### Hardening the App
 
+- lazy loading to limit access to code in devtools (main.chunk.js)
+- lazy loading => splitting code into bundles to only load in certain scenarios e.g. if a route is accessed https://reactjs.org/docs/code-splitting.html
+
 ### Switching to Cookies
