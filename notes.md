@@ -139,6 +139,39 @@ app.use(attachUser); // applies to all below here
 ### Hardening the App
 
 - lazy loading to limit access to code in devtools (main.chunk.js)
-- lazy loading => splitting code into bundles to only load in certain scenarios e.g. if a route is accessed https://reactjs.org/docs/code-splitting.html
+- lazy loading => splitting code into bundles to only load in certain scenarios e.g. if a route is accessed https://reactjs.org/docs/code-splitting.html (lazy, Suspense) => better security and better performance
+- maintain an allowed origin list for tokens e.g. inside axios.interceptors.request block:
+
+```javascript
+const { origin } = new URL(config.url);
+const allowedOrigins = ["http://localhost:3001"];
+if (allowedOrigins.includes(origin)) {
+  config.headers.authorization = `Bearer ${token}`;
+}
+```
+
+- sanitize content when setting innerHTML e.g. content via richText editor that's saved in db then displayed => risks XXS attack
+- e.g. submit an image element with a broken source => triggers onError and potentially runs script => potentially steals token from localStorage!!!
+
+```javascript
+<div dangerouslySetInnerHTML={{ __html: formattedMessage }}></div>
+```
+
+- get help from a library: e.g. https://github.com/cure53/DOMPurify
+  `npm i dompurify`
+
+```javascript
+<div
+  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(formattedMessage) }}
+></div>
+```
+
+- can also sanitize content server-side before stored to database etc.
+- also never a good idea to store tokens in local storage!!
 
 ### Switching to Cookies
+
+- better than localstorage strategy!
+- Set-Cookie header: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+- browser will then automatically include it in any requests to that same domain
+- add proxy to React app (if using Create React App) -> to api but 'as if' still on localhost:3000
