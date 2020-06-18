@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Redirect } from "react-router";
+import { Redirect } from "react-router-dom";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import Card from "../components/common/Card";

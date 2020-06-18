@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Form, Formik } from "formik";
-import { Redirect } from "react-router";
+import { Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import Card from "../components/common/Card";
 import GradientButton from "../components/common/GradientButton";
