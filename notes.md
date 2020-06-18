@@ -21,3 +21,18 @@
 - never store passwords in the db 'in the clear' -> only ever hashed e.g. via bcrypt to generate hash/salt
 - https://github.com/kelektiv/node.bcrypt.js
 - see `orbit-api/util.js` for helper methods using bcrypt to sign/verify
+- using Redirect component from react-router (https://reacttraining.com/react-router/web/example/auth-workflow)
+
+### Auth State
+
+- React Context Vs prop-drilling: https://reactjs.org/docs/context.html
+
+### Client-side Routing
+
+### Authenticated HTTP Requests
+
+### Protecting API Endpoints
+
+### Hardening the App
+
+### Switching to Cookies
