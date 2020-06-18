@@ -29,7 +29,22 @@ npm run dev
 ### Features:
 
 - see notes.md for more details!
-- JWTs & localStorage, Auth State in React Apps, Client-Side routes, API protected endpoints, roles/authentication, Code-Splitting, XXS protection via DOMPurify (`dompurify`), Cookies, CSRF protection via Csurf (`csurf`)
+- JWTs & localStorage (using ), Auth State in React Apps, Client-Side routes, API protected endpoints, roles/authentication, Code-Splitting, XXS protection via DOMPurify, Cookies, CSRF protection via Csurf
+
+#### Security packages
+
+Express middleware:
+
+- https://github.com/auth0/express-jwt
+- https://github.com/expressjs/cookie-parser
+- https://github.com/expressjs/csurf
+
+Helpful packages:
+
+- https://github.com/auth0/jwt-decode
+- https://github.com/auth0/node-jsonwebtoken (signing jwt)
+- https://github.com/kelektiv/node.bcrypt.js (password hashing/salting)
+- https://github.com/cure53/DOMPurify (sanitize innerHTML)
 
 ## License of original Orbit Code
 
