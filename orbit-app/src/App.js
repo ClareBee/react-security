@@ -13,6 +13,7 @@ import Account from "./pages/Account";
 import FourOFour from "./pages/FourOFour";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import { AuthContext } from "./context/AuthContext";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));

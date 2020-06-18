@@ -174,4 +174,60 @@ if (allowedOrigins.includes(origin)) {
 - better than localstorage strategy!
 - Set-Cookie header: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
 - browser will then automatically include it in any requests to that same domain
-- add proxy to React app (if using Create React App) -> to api but 'as if' still on localhost:3000
+- add proxy to React app (if using Create React App) -> to api but 'as if' still on localhost:3000 (setting endpoint in .env.local to be '/api')
+- set cookie on login/signup using Express's built-in res.cookie() option which sets the header for you:
+
+```javascript
+res.cookie("token", token, {
+  httpOnly: true,
+});
+```
+
+> Using the HttpOnly flag when generating a cookie helps mitigate the risk of client side script accessing the protected cookie (if the browser supports it).
+
+- remove token-related code for local storage
+- add cookie-parser middleware to the api: https://www.npmjs.com/package/cookie-parser
+
+```javascript
+app.use(cookieParser());
+```
+
+- get token from req.cookies.token => see `orbit-api/server.js`
+- and include custom field to the checkJwt method
+
+```javascript
+const checkJwt = jwt({
+  secret: process.env.JWT_SECRET,
+  issuer: "api.orbit",
+  audience: "api.orbit",
+  // custom (defaults to looking on auth header)
+  getToken: (req) => req.cookies.token,
+});
+```
+
+- NB CSRF = Cross-Site Request Forgery => attacker gets user to access url => captures cookies?
+- to guard against this, use csurf in your api: https://github.com/expressjs/csurf
+- 'double submit cookie pattern'
+  > Double submitting cookies is defined as sending a random value in both a cookie and as a request parameter, with the server verifying if the cookie value and request value are equal.
+
+```javascript
+const csrfProtection = csrf({ cookie: true }); // double-submit cookie pattern
+app.use(csrfProtection);
+app.get("/api/csrf-token", (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
+});
+```
+
+- sends \_csrf cookie -> sent back to api on anything that will mutate data
+- then in the app (in FetchContext.js):
+
+```javascript
+useEffect(() => {
+  const getCsrfToken = async () => {
+    const { data } = await authAxios.get("/csrf-token");
+    // handled by csurf
+    authAxios.defaults.headers["X-CSRF-Token"] = data.csrfToken;
+  };
+  getCsrfToken();
+}, []);
+```
