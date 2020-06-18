@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const jwtDecode = require("jwt-decode");
 const mongoose = require("mongoose");
+const jwt = require("express-jwt");
 
 const dashboardData = require("./data/dashboard");
 const User = require("./data/User");
@@ -116,7 +117,31 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
-app.get("/api/dashboard-data", (req, res) => res.json(dashboardData));
+const attachUser = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: "Authentication invalid" });
+  }
+  const decodedToken = jwtDecode(token.slice(7)); // get rid of Bearer scheme
+  if (!decodedToken) {
+    return res
+      .status(401)
+      .json({ message: "There was a problem authorising the request" });
+  } else {
+    req.user = decodedToken;
+    next();
+  }
+};
+
+app.use(attachUser); // applies to all below here
+
+const checkJwt = jwt({
+  secret: process.env.JWT_SECRET,
+  issuer: "api.orbit",
+  audience: "api.orbit",
+});
+
+app.get("/api/dashboard-data", checkJwt, (req, res) => res.json(dashboardData));
 
 app.patch("/api/user-role", async (req, res) => {
   try {

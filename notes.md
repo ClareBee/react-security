@@ -90,6 +90,52 @@ and then add the interceptors onto that
 
 ### Protecting API Endpoints
 
+- use middleware to protect endpoints on the backend
+  e.g.
+
+```javascript
+app.use((req, res, next) => {
+  // code
+  console.log(req.headers);
+  next();
+});
+```
+
+- best to use library rather than rolling your own
+- `npm i --save express-jwt jwt-decode`
+
+```javascript
+  secret: process.env.JWT_SECRET,
+  issuer: "api.orbit",
+  audience: "api.orbit",
+});
+
+app.get("/api/dashboard-data", checkJwt, (req, res) => res.json(dashboardData));
+```
+
+- attach user onto the request object w custom middleware
+- 'sub' claim => user id aka subject: stored on token
+
+```javascript
+const attachUser = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: "Authentication invalid" });
+  }
+  const decodedToken = jwtDecode(token.slice(7)); // get rid of Bearer scheme
+  if (!decodedToken) {
+    return res
+      .status(401)
+      .json({ message: "There was a problem authorising the request" });
+  } else {
+    req.user = decodedToken;
+    next();
+  }
+};
+
+app.use(attachUser); // applies to all below here
+```
+
 ### Hardening the App
 
 ### Switching to Cookies
